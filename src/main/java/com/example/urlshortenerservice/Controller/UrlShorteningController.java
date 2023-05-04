@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.io.IOException;
-import java.time.LocalDateTime;
+
 
 @RestController
-public class urlShorteningController {
+public class UrlShorteningController {
 
     @Autowired
     private UrlService urlService;
@@ -67,3 +67,4 @@ public class urlShorteningController {
         return null;
     }
 }
+//todo catch better exception
