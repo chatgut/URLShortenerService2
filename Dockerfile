@@ -1,4 +1,4 @@
-FROM eclipse-temurin:19-jre-jammy
+FROM eclipse-temurin:20-jre-jammy
 RUN mvn clean package
 
 COPY target/*.jar app.jar
