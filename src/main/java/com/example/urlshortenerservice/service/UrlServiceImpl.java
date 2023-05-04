@@ -1,9 +1,8 @@
 package com.example.urlshortenerservice.service;
 
-import com.example.urlshortenerservice.model.Url;
-import com.example.urlshortenerservice.model.UrlDto;
+import com.example.urlshortenerservice.entity.Url;
+import com.example.urlshortenerservice.dto.UrlDto;
 
-import com.example.urlshortenerservice.model.UrlResponseDto;
 import com.example.urlshortenerservice.reposiotry.UrlRepository;
 import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 

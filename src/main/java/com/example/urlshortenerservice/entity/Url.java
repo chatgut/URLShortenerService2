@@ -1,4 +1,4 @@
-package com.example.urlshortenerservice.model;
+package com.example.urlshortenerservice.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

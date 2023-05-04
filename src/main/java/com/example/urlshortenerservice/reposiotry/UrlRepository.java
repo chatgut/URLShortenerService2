@@ -1,6 +1,6 @@
 package com.example.urlshortenerservice.reposiotry;
 
-import com.example.urlshortenerservice.model.Url;
+import com.example.urlshortenerservice.entity.Url;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

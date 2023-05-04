@@ -1,4 +1,4 @@
-package com.example.urlshortenerservice.model;
+package com.example.urlshortenerservice.dto;
 
 public class UrlErrorReponseDto {
 

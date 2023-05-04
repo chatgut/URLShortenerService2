@@ -1,9 +1,9 @@
 package com.example.urlshortenerservice.Controller;
 
-import com.example.urlshortenerservice.model.Url;
-import com.example.urlshortenerservice.model.UrlDto;
-import com.example.urlshortenerservice.model.UrlErrorReponseDto;
-import com.example.urlshortenerservice.model.UrlResponseDto;
+import com.example.urlshortenerservice.entity.Url;
+import com.example.urlshortenerservice.dto.UrlDto;
+import com.example.urlshortenerservice.dto.UrlErrorReponseDto;
+import com.example.urlshortenerservice.dto.UrlResponseDto;
 import com.example.urlshortenerservice.service.UrlService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
