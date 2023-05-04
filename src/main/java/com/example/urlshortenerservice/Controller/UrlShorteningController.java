@@ -19,7 +19,6 @@ import java.io.IOException;
 @RestController
 public class UrlShorteningController {
 
-    //testing something
 
     @Autowired
     private UrlService urlService;
@@ -30,18 +29,20 @@ public class UrlShorteningController {
 
         Url urlToRet = urlService.generateSHortLink(urlDto);
         if (urlToRet != null) {
+
             UrlResponseDto urlResponseDto = new UrlResponseDto();
             urlResponseDto.setOriginalUrl(urlToRet.getOriginalUrl());
             urlResponseDto.setExpirationDate(urlToRet.getExpirationDate());
             urlResponseDto.setShortLink(urlToRet.getShortLink());
 
-            return new ResponseEntity<UrlResponseDto>(urlResponseDto, HttpStatus.OK);
+
+            return new ResponseEntity<>(urlResponseDto, HttpStatus.OK);
         }
         UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
         urlErrorReponseDto.setStatus("404");
         urlErrorReponseDto.setError("There was an error processing your request. Please try again!");
 
-        return new ResponseEntity<UrlErrorReponseDto>(urlErrorReponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(urlErrorReponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/{shortLink}")
@@ -51,7 +52,7 @@ public class UrlShorteningController {
             UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
             urlErrorReponseDto.setError("Url does not exit or it might have expired!");
             urlErrorReponseDto.setStatus("400");
-            return new ResponseEntity<UrlErrorReponseDto>(urlErrorReponseDto, HttpStatus.OK);
+            return new ResponseEntity<>(urlErrorReponseDto, HttpStatus.OK);
         }
         Url urlToRet = urlService.getEncodedURL(shortLink);
 
@@ -61,7 +62,7 @@ public class UrlShorteningController {
             UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
             urlErrorReponseDto.setError("Url Expired. Please try generating a fresh one.");
             urlErrorReponseDto.setStatus("200");
-            return new ResponseEntity<UrlErrorReponseDto>(urlErrorReponseDto, HttpStatus.OK);
+            return new ResponseEntity<>(urlErrorReponseDto, HttpStatus.OK);
         }
 
         response.sendRedirect(urlToRet.getOriginalUrl());
