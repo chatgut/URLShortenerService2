@@ -4,12 +4,12 @@ services:
   app:
     build:
       context: .
-    container_name: carthief
+    container_name: URLShortenerService2
     depends_on:
       mysql:
         condition: service_healthy
     environment:
-      DB_URL: jdbc:mysql://mysqlDb:3306/demo
+      DB_URL: jdbc:mysql://mysql:3306/demo
       DB_USER: developer
       DB_PASS: password
     ports:
