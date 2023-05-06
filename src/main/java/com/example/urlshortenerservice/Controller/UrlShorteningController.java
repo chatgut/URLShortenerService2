@@ -4,6 +4,7 @@ import com.example.urlshortenerservice.entity.Url;
 import com.example.urlshortenerservice.dto.UrlDto;
 import com.example.urlshortenerservice.dto.UrlErrorReponseDto;
 import com.example.urlshortenerservice.dto.UrlResponseDto;
+import com.example.urlshortenerservice.service.Publisher;
 import com.example.urlshortenerservice.service.UrlService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -20,12 +21,20 @@ import java.io.IOException;
 public class UrlShorteningController {
 
 
-    @Autowired
-    private UrlService urlService;
 
+    private UrlService urlService;
+    private Publisher publisher;
+
+
+    public UrlShorteningController(UrlService urlService, Publisher publisher) {
+        this.urlService = urlService;
+        this.publisher = publisher;
+    }
 
     @PostMapping("/generate")
     public ResponseEntity<?> generateShortLink(@RequestBody UrlDto urlDto) {
+
+        //publisher.publishMessage(urlDto.getUrl());
 
         Url urlToRet = urlService.generateSHortLink(urlDto);
         if (urlToRet != null) {

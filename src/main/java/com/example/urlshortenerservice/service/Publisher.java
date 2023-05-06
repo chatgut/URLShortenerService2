@@ -36,7 +36,7 @@ public class Publisher{
         container.setQueueNames(MESSAGE_QUEUE);
         container.setMessageListener(message -> {
             try {
-                Thread.sleep(500);
+                Thread.sleep(5000);
             }
             catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -46,4 +46,6 @@ public class Publisher{
 
         return container;
     }
+
+
 }
