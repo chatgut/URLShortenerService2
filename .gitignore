@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#dev properties is in ignore
+src/main/resources/application-dev.properties
