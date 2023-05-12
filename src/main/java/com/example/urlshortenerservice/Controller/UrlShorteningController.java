@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.io.IOException;
 
-
+@CrossOrigin
 @RestController
 public class UrlShorteningController {
 
