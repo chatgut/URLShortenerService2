@@ -1,0 +1,46 @@
+apiVersion: v1
+
+kind: Service
+metadata:
+  name: auth-DB
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: auth-DB
+  clusterIP: None
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-DB
+spec:
+  selector:
+    matchLabels:
+      app: auth-DB
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: auth-DB
+    spec:
+      containers:
+        - image: mysql:5.6
+          name: auth-DB
+          env:
+
+            # Use secret in real usage
+            - name: developer
+              value: password
+          ports:
+            - containerPort: 3306
+              name: auth-DB
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
