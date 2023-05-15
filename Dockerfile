@@ -4,6 +4,7 @@
 #COPY target/*.jar app.jar
 #WORKDIR /app
 #EXPOSE 8080
+
 FROM maven:3.9-eclipse-temurin-20 as builder
 COPY src /app/src
 COPY pom.xml /app
