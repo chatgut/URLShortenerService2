@@ -56,6 +56,16 @@
             <artifactId>guava</artifactId>
             <version>28.2-android</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-sample-web-jsp-archetype</artifactId>
+            <version>1.0.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -103,6 +113,8 @@
                     </image>
                 </configuration>
             </plugin>
+
+
         </plugins>
     </build>
 
