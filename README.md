@@ -1,4 +1,4 @@
-URL shortener service
+# URL shortener service
 
 
 This microservice application offers the following features:
@@ -11,23 +11,22 @@ To start application run docker-compose.yml and you will make automatic app and 
 
 
 ---
-Endpoints
+# Endpoints
 
-POST /generate - Create a new short link
+* POST /generate - Create a new short link
 
-GET /{shortlink}
+* GET /{shortlink}
 
-
-PUT /generated - put url to get short link
-Example:
+### Example:
+* POST http://localhost:8004/generate
 
 {
 "url":"https://www.google.com/search?q=funny+bild&sxsrf=APwXEddii8641FDUtoS1ZqU0lSlPuKykZQ:1683457482701&source=lnms&tbm=isch&sa=X&ved=2ahUKEwiHr4Dqh-P-AhUhVfEDHR3GCT4Q_AUoAXoECAEQAw&biw=1920&bih=975&dpr=1#imgrc=h11oHZqoZQwR5M"
 }
 
-------
+---
+### Preview:
 
-Example:
 {
 "originalUrl": "https://www.google.com/search?q=funny+bild&sxsrf=APwXEddii8641FDUtoS1ZqU0lSlPuKykZQ:1683457482701&source=lnms&tbm=isch&sa=X&ved=2ahUKEwiHr4Dqh-P-AhUhVfEDHR3GCT4Q_AUoAXoECAEQAw&biw=1920&bih=975&dpr=1#imgrc=h11oHZqoZQwR5M",
 "shortLink": "cf157df3",
@@ -36,8 +35,8 @@ Example:
 
 -----
 
-GET / {short link}
+* GET / {short link}
 
-Example:
+### Example:
 http://localhost:8004/cf157df3
 
