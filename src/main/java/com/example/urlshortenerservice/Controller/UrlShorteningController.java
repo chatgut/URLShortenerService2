@@ -70,4 +70,3 @@ public class UrlShorteningController {
         return null;
     }
 }
-//todo catch better exception
