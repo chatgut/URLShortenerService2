@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql
+  namespace: chatgut
 spec:
   type: NodePort
   ports:
     - port: 3306
-      nodePort: 30000  # Specify the desired node port here
   selector:
     app: mysql
 ---
@@ -29,6 +29,9 @@ spec:
         - image: mysql:latest
           name: mysql
           env:
+            # Use secret in real usage
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
             - name: developer
               value: password
           ports:
