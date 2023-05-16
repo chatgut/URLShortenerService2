@@ -70,6 +70,11 @@
             <artifactId>amqp-client</artifactId>
             <version>5.16.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+            <version>3.0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
