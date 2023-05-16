@@ -12,6 +12,7 @@ public class RabbitConnection {
     private Connection connection;
     private Channel channel;
     private String queueName;
+    private String testMessage;
 
     public RabbitConnection() {
         try {
@@ -37,18 +38,44 @@ public class RabbitConnection {
                                            AMQP.BasicProperties properties, byte[] body) throws IOException {
                     String message = new String(body, StandardCharsets.UTF_8);
 
-                    // Parse the JSON payload
+
                     JSONObject jsonPayload = new JSONObject(message);
 
-                    // Extract the "message" field
+
                     String extractedMessage = jsonPayload.getString("message");
+
+
+                    testMessage = extractedMessage;
 
                     System.out.println("Received message: " + extractedMessage);
 
-                    // Process the received message here
+
                 }
             });
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void publishMessage() {
+        try {
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost(System.getenv().getOrDefault("ROCKET_RABBIT_HOST", "localhost"));
+            factory.setPort(5672);
+
+            try (Connection connection = factory.newConnection();
+                 Channel channel = connection.createChannel()) {
+                channel.queueDeclare(queueName, false, false, false, null);
+
+                JSONObject jsonAd = new JSONObject();
+                String message = "hello";
+
+
+
+
+                channel.basicPublish("", queueName, null, message.getBytes(StandardCharsets.UTF_8));
+                System.out.println("Sent message: " + message);
+            }
+        } catch (TimeoutException | IOException e) {
             e.printStackTrace();
         }
     }
