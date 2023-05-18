@@ -3,7 +3,6 @@ package com.example.urlshortenerservice;
 import com.example.urlshortenerservice.dto.UrlDto;
 import com.example.urlshortenerservice.dto.UrlResponseDto;
 import com.example.urlshortenerservice.entity.Url;
-import com.example.urlshortenerservice.reposiotry.UrlRepository;
 import com.example.urlshortenerservice.service.UrlService;
 import com.google.common.hash.Hashing;
 import com.rabbitmq.client.*;
@@ -24,7 +23,7 @@ public class RabbitConnection {
 
     public String messageConvert;
 
-    UrlResponseDto  UrlResponseDto = new UrlResponseDto();
+    UrlResponseDto UrlResponseDto = new UrlResponseDto();
     UrlDto urlDto = new UrlDto();
     Url url = new Url();
 
@@ -51,7 +50,6 @@ public class RabbitConnection {
     };
 
 
-
     public RabbitConnection() {
         try {
             ConnectionFactory factory = new ConnectionFactory();
@@ -67,6 +65,7 @@ public class RabbitConnection {
             e.printStackTrace();
         }
     }
+
 
     public void startConsuming() {
         try {
@@ -88,17 +87,21 @@ public class RabbitConnection {
                         Url urlToRet = urlService.generateSHortLink(urlDto);
 
 
-                            UrlResponseDto urlResponseDto = new UrlResponseDto();
-                            urlResponseDto.setOriginalUrl(messageConvert);
-                            urlResponseDto.setExpirationDate(LocalDateTime.now());
-                            urlResponseDto.setShortLink(encodeUrl(messageConvert));
+                        UrlResponseDto urlResponseDto = new UrlResponseDto();
+                        urlResponseDto.setOriginalUrl(messageConvert);
+                        urlResponseDto.setExpirationDate(LocalDateTime.now());
+                        urlResponseDto.setShortLink(encodeUrl(messageConvert));
 
-                        System.out.println("Convert Short Link: " + urlResponseDto.getShortLink());
 
-                        publishMessage(urlResponseDto.getShortLink());
+                        puttingInDatabase(urlResponseDto.getOriginalUrl(),urlResponseDto.getExpirationDate(),urlResponseDto.getShortLink());
 
-                    }
-                    else {
+
+
+//                        System.out.println("Convert Short Link: " + urlResponseDto.getShortLink());
+//
+//                        publishMessage(urlResponseDto.getShortLink());
+
+                    } else {
                         System.out.println("Received message DOES not contain an http URl: " + extractedMessage);
                     }
 
@@ -108,6 +111,14 @@ public class RabbitConnection {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public void puttingInDatabase(String orginalUrl, LocalDateTime expiredTide, String shortLink){
+        UrlResponseDto urlResponseDto = new UrlResponseDto();
+        System.out.println(orginalUrl);
+        System.out.println(expiredTide);
+        System.out.println(shortLink);
+
+
     }
 
     private String encodeUrl(String url) {
@@ -137,9 +148,9 @@ public class RabbitConnection {
                 channel.queueDeclare(queueName, false, false, false, null);
 
                 JSONObject jsonAd = new JSONObject();
-               jsonAd.put("message",sendingMessage);
+                jsonAd.put("message", sendingMessage);
 
-               String message = jsonAd.toString();
+                String message = jsonAd.toString();
 
 
                 channel.basicPublish("", queueName, null, message.getBytes(StandardCharsets.UTF_8));
@@ -150,3 +161,4 @@ public class RabbitConnection {
         }
     }
 }
+
