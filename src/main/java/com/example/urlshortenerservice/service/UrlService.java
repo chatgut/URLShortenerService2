@@ -12,4 +12,6 @@ public interface UrlService {
     public Url getEncodedURL(String url);
     public void deleteShortLink(Url url);
 
+    public Url save(Url url);
+
 }

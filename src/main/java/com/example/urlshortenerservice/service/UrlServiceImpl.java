@@ -74,5 +74,10 @@ public class UrlServiceImpl implements UrlService {
         urlRepository.delete(url);
     }
 
+    @Override
+    public Url save(Url url) {
+      return  urlRepository.save(url);
+    }
+
 
 }

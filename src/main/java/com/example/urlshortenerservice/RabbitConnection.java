@@ -4,6 +4,7 @@ import com.example.urlshortenerservice.dto.UrlDto;
 import com.example.urlshortenerservice.dto.UrlResponseDto;
 import com.example.urlshortenerservice.entity.Url;
 import com.example.urlshortenerservice.service.UrlService;
+import com.example.urlshortenerservice.service.UrlServiceImpl;
 import com.google.common.hash.Hashing;
 import com.rabbitmq.client.*;
 
@@ -14,7 +15,15 @@ import java.time.LocalDateTime;
 import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+@Component
 public class RabbitConnection {
     private Connection connection;
     private Channel channel;
@@ -27,27 +36,11 @@ public class RabbitConnection {
     UrlDto urlDto = new UrlDto();
     Url url = new Url();
 
-    UrlService urlService = new UrlService() {
-        @Override
-        public Url generateSHortLink(UrlDto urlDto) {
-            return null;
-        }
 
-        @Override
-        public Url persistHortLInk(Url url) {
-            return null;
-        }
+    @Autowired
+    @Qualifier("urlServiceImpl")
+    public UrlService urlService;
 
-        @Override
-        public Url getEncodedURL(String url) {
-            return null;
-        }
-
-        @Override
-        public void deleteShortLink(Url url) {
-
-        }
-    };
 
 
     public RabbitConnection() {
@@ -84,6 +77,9 @@ public class RabbitConnection {
                         System.out.println("Received message contains an HTTP URL from rabbitMQ: " + extractedMessage);
                         messageConvert = extractedMessage;
 
+
+                        urlDto.setUrl(messageConvert);
+
                         Url urlToRet = urlService.generateSHortLink(urlDto);
 
 
@@ -112,16 +108,28 @@ public class RabbitConnection {
             e.printStackTrace();
         }
     }
-    public void puttingInDatabase(String orginalUrl, LocalDateTime expiredTide, String shortLink){
 
-        //todo fix this to put in database
-        UrlResponseDto urlResponseDto = new UrlResponseDto();
-        System.out.println(orginalUrl);
-        System.out.println(expiredTide);
-        System.out.println(shortLink);
+    public ResponseEntity<?> puttingInDatabase(String orginalUrl, LocalDateTime expiredTide, String shortLink) {
 
+
+        urlDto.setUrl(orginalUrl);
+
+
+        Url urlToRet = urlService.generateSHortLink(urlDto);
+        if (urlToRet != null) {
+
+            UrlResponseDto urlResponseDto = new UrlResponseDto();
+            urlResponseDto.setOriginalUrl(urlToRet.getOriginalUrl());
+            urlResponseDto.setExpirationDate(urlToRet.getExpirationDate());
+            urlResponseDto.setShortLink(urlToRet.getShortLink());
+
+
+            return new ResponseEntity<>(urlResponseDto, HttpStatus.OK);
+        }
+        return null;
 
     }
+
 
     private String encodeUrl(String url) {
         String encodedUrl = "";
