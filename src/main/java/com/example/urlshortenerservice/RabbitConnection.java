@@ -32,15 +32,12 @@ public class RabbitConnection {
 
     public String messageConvert;
 
-    UrlResponseDto UrlResponseDto = new UrlResponseDto();
     UrlDto urlDto = new UrlDto();
-    Url url = new Url();
+
 
 
     @Autowired
-    @Qualifier("urlServiceImpl")
     public UrlService urlService;
-
 
 
     public RabbitConnection() {
@@ -84,18 +81,15 @@ public class RabbitConnection {
 
 
                         UrlResponseDto urlResponseDto = new UrlResponseDto();
-                        urlResponseDto.setOriginalUrl(messageConvert);
+                        urlResponseDto.setOriginalUrl(urlToRet.getOriginalUrl());
                         urlResponseDto.setExpirationDate(LocalDateTime.now());
-                        urlResponseDto.setShortLink(encodeUrl(messageConvert));
-
-
-                        puttingInDatabase(urlResponseDto.getOriginalUrl(),urlResponseDto.getExpirationDate(),urlResponseDto.getShortLink());
+                        urlResponseDto.setShortLink(urlToRet.getShortLink());
 
 
 
 //                        System.out.println("Convert Short Link: " + urlResponseDto.getShortLink());
-//
-//                        publishMessage(urlResponseDto.getShortLink());
+
+                        publishMessage(urlResponseDto.getShortLink());
 
                     } else {
                         System.out.println("Received message DOES not contain an http URl: " + extractedMessage);
@@ -108,28 +102,6 @@ public class RabbitConnection {
             e.printStackTrace();
         }
     }
-
-    public ResponseEntity<?> puttingInDatabase(String orginalUrl, LocalDateTime expiredTide, String shortLink) {
-
-
-        urlDto.setUrl(orginalUrl);
-
-
-        Url urlToRet = urlService.generateSHortLink(urlDto);
-        if (urlToRet != null) {
-
-            UrlResponseDto urlResponseDto = new UrlResponseDto();
-            urlResponseDto.setOriginalUrl(urlToRet.getOriginalUrl());
-            urlResponseDto.setExpirationDate(urlToRet.getExpirationDate());
-            urlResponseDto.setShortLink(urlToRet.getShortLink());
-
-
-            return new ResponseEntity<>(urlResponseDto, HttpStatus.OK);
-        }
-        return null;
-
-    }
-
 
     private String encodeUrl(String url) {
         String encodedUrl = "";

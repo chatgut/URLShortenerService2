@@ -13,12 +13,12 @@ public class UrlShortenerServiceApplication implements CommandLineRunner {
 
     @Autowired
     private RabbitConnection rabbitConnection;
+
     public static void main(String[] args) {
         SpringApplication.run(UrlShortenerServiceApplication.class, args);
 
         RabbitConnection rabbitConnection = new RabbitConnection();
         rabbitConnection.startConsuming();
-
 
     }
 
