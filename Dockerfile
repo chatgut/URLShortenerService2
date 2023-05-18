@@ -1,9 +1,22 @@
-#FROM eclipse-temurin:17-jre-jammy
-##RUN mvn clean package
+#FROM container-registry.oracle.com/graalvm/native-image:latest as graalvm
 #
-#COPY target/*.jar app.jar
+#RUN microdnf -y install wget unzip zip findutils tar
+#
+#COPY . /app
 #WORKDIR /app
-#EXPOSE 8080
+#
+#RUN \
+#    curl -s "https://get.sdkman.io" | bash; \
+#    source "$HOME/.sdkman/bin/sdkman-init.sh"; \
+#    sdk install maven; \
+#    mvn package -Pnative native:compile -DskipTests
+#
+#FROM container-registry.oracle.com/os/oraclelinux:9-slim
+#
+#EXPOSE 8001
+#COPY --from=graalvm app/target/imageService /app
+#
+#ENTRYPOINT ["/app"]
 
 FROM maven:3.9-eclipse-temurin-20 as builder
 COPY src /app/src
@@ -18,7 +31,7 @@ FROM eclipse-temurin:20-jre
 RUN adduser --system --group spring
 USER spring:spring
 ENV PORT 8080
-EXPOSE 8080
+EXPOSE 8004
 WORKDIR application
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/snapshot-dependencies/ ./

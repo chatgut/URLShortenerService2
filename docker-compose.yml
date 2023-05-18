@@ -13,7 +13,7 @@ services:
       DB_USER: developer
       DB_PASS: password
     ports:
-      - "8080:8080"
+      - "8004:8080"
 
   mysql:
     image: 'mysql:latest'
