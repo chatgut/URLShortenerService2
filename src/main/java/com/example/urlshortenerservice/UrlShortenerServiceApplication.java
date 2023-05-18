@@ -11,8 +11,8 @@ public class UrlShortenerServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(UrlShortenerServiceApplication.class, args);
 
-        RabbitConnection rabbitConnection = new RabbitConnection();
-        rabbitConnection.startConsuming();
+//        RabbitConnection rabbitConnection = new RabbitConnection();
+//        rabbitConnection.startConsuming();
 
     }
 
