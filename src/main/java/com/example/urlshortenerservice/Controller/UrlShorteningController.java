@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.io.IOException;
+import com.example.urlshortenerservice.RabbitConnection;
 
 @CrossOrigin
 @RestController
@@ -22,6 +23,11 @@ public class UrlShorteningController {
 
     @Autowired
     private UrlService urlService;
+
+
+    RabbitConnection rabbitConnection = new RabbitConnection();
+
+    String messageConvert = rabbitConnection.messageConvert;
 
 
     @PostMapping("/generate")

@@ -6,6 +6,7 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
+
 import org.json.JSONObject;
 
 public class RabbitConnection {
@@ -13,6 +14,8 @@ public class RabbitConnection {
     private Channel channel;
     private String queueName;
     private String testMessage;
+
+    public String messageConvert;
 
     public RabbitConnection() {
         try {
@@ -41,13 +44,14 @@ public class RabbitConnection {
 
                     JSONObject jsonPayload = new JSONObject(message);
 
-
                     String extractedMessage = jsonPayload.getString("message");
 
-
-                    testMessage = extractedMessage;
-
-                    System.out.println("Received message: " + extractedMessage);
+                    if (checkingForHttpAndHttps(extractedMessage)) {
+                        System.out.println("Received message contains an HTTP URL: " + extractedMessage);
+                        messageConvert = extractedMessage;
+                    } else {
+                        System.out.println("Received message DOES not contain an http URl: " + extractedMessage);
+                    }
 
 
                 }
@@ -56,6 +60,13 @@ public class RabbitConnection {
             e.printStackTrace();
         }
     }
+
+    private boolean checkingForHttpAndHttps(String extractedMessage) {
+        String httpUrlPattern = "(?i)\\bhttps?://\\S+\\b";
+
+        return extractedMessage.matches(httpUrlPattern);
+    }
+
     public void publishMessage() {
         try {
             ConnectionFactory factory = new ConnectionFactory();
@@ -68,8 +79,6 @@ public class RabbitConnection {
 
                 JSONObject jsonAd = new JSONObject();
                 String message = "hello";
-
-
 
 
                 channel.basicPublish("", queueName, null, message.getBytes(StandardCharsets.UTF_8));
