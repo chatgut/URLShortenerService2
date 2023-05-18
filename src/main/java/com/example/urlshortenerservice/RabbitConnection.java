@@ -113,6 +113,8 @@ public class RabbitConnection {
         }
     }
     public void puttingInDatabase(String orginalUrl, LocalDateTime expiredTide, String shortLink){
+
+        //todo fix this to put in database
         UrlResponseDto urlResponseDto = new UrlResponseDto();
         System.out.println(orginalUrl);
         System.out.println(expiredTide);
