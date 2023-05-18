@@ -1,5 +1,10 @@
 package com.example.urlshortenerservice;
 
+import com.example.urlshortenerservice.dto.UrlDto;
+import com.example.urlshortenerservice.dto.UrlResponseDto;
+import com.example.urlshortenerservice.entity.Url;
+import com.example.urlshortenerservice.reposiotry.UrlRepository;
+import com.example.urlshortenerservice.service.UrlService;
 import com.rabbitmq.client.*;
 
 
@@ -16,6 +21,34 @@ public class RabbitConnection {
     private String testMessage;
 
     public String messageConvert;
+
+    UrlResponseDto  UrlResponseDto = new UrlResponseDto();
+    UrlDto urlDto = new UrlDto();
+    Url url = new Url();
+
+    UrlService urlService = new UrlService() {
+        @Override
+        public Url generateSHortLink(UrlDto urlDto) {
+            return null;
+        }
+
+        @Override
+        public Url persistHortLInk(Url url) {
+            return null;
+        }
+
+        @Override
+        public Url getEncodedURL(String url) {
+            return null;
+        }
+
+        @Override
+        public void deleteShortLink(Url url) {
+
+        }
+    };
+
+
 
     public RabbitConnection() {
         try {
@@ -49,6 +82,13 @@ public class RabbitConnection {
                     if (checkingForHttpAndHttps(extractedMessage)) {
                         System.out.println("Received message contains an HTTP URL: " + extractedMessage);
                         messageConvert = extractedMessage;
+
+                        message
+
+                        var test = urlService.getEncodedURL(messageConvert);
+                        var test1 = test.getOriginalUrl();
+
+                        System.out.println(test1);
                     } else {
                         System.out.println("Received message DOES not contain an http URl: " + extractedMessage);
                     }
@@ -60,6 +100,29 @@ public class RabbitConnection {
             e.printStackTrace();
         }
     }
+
+    private String storeShortenedURL(String shortenedURL) {
+
+        urlDto.setUrl(shortenedURL);
+        UrlResponseDto.setOriginalUrl(shortenedURL);
+        var getShortenUrl = UrlResponseDto.getShortLink();
+
+        if (getShortenUrl != null) {
+            return getShortenUrl;
+        } else {
+            return "null";
+        }
+
+
+
+
+        // Connect to your database
+        // Execute a query or use an ORM framework to store the shortened URL
+        // For example, if you have a 'UrlMapping' entity, you can create and save a new instance:
+        // UrlMapping urlMapping = new UrlMapping(originalUrl, shortenedUrl);
+        // entityManager.persist(urlMapping);
+    }
+
 
     private boolean checkingForHttpAndHttps(String extractedMessage) {
         String httpUrlPattern = "(?i)\\bhttps?://\\S+\\b";

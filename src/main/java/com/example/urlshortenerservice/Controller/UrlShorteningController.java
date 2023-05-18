@@ -25,11 +25,6 @@ public class UrlShorteningController {
     private UrlService urlService;
 
 
-    RabbitConnection rabbitConnection = new RabbitConnection();
-
-    String messageConvert = rabbitConnection.messageConvert;
-
-
     @PostMapping("/generate")
     public ResponseEntity<?> generateShortLink(@RequestBody UrlDto urlDto) {
 
@@ -60,6 +55,7 @@ public class UrlShorteningController {
             urlErrorReponseDto.setStatus("400");
             return new ResponseEntity<>(urlErrorReponseDto, HttpStatus.OK);
         }
+
         Url urlToRet = urlService.getEncodedURL(shortLink);
 
         if (urlToRet.getExpirationDate().isBefore(LocalDateTime.now())) {
