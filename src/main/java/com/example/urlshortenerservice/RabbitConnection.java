@@ -3,6 +3,7 @@ package com.example.urlshortenerservice;
 import com.example.urlshortenerservice.dto.UrlDto;
 import com.example.urlshortenerservice.dto.UrlResponseDto;
 import com.example.urlshortenerservice.entity.Url;
+
 import com.example.urlshortenerservice.service.UrlService;
 import com.rabbitmq.client.*;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeoutException;
+
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +25,13 @@ public class RabbitConnection {
     private Channel channel;
     private String queueName;
 
-    public String messageConvert;
+    private String messageConvert;
 
     UrlDto urlDto = new UrlDto();
 
-
-
     @Autowired
     public UrlService urlService;
+
 
 
     public RabbitConnection() {
@@ -66,11 +67,9 @@ public class RabbitConnection {
 
                     if (checkingForHttpAndHttps(extractedMessage)) {
                         System.out.println("Received message contains an HTTP URL from rabbitMQ: " + extractedMessage);
+
                         messageConvert = extractedMessage;
-
-
                         UrlResponseDto urlResponseDto = addingInDatabaseMessage();
-
 
                         System.out.println("Convert Short Link: " + urlResponseDto.getShortLink());
 
