@@ -25,52 +25,49 @@ public class UrlShorteningController {
     private UrlService urlService;
 
 
-    @PostMapping("/generate")
-//    public ResponseEntity<?> generateShortLink(@RequestBody UrlDto urlDto) {
 
+    @PostMapping("/generate")
     public ResponseEntity<?> generateShortLink(@RequestBody UrlDto urlDto) {
         Url urlToRet = urlService.generateSHortLink(urlDto);
-        if (urlToRet != null) {
 
+        if (urlToRet != null) {
             UrlResponseDto urlResponseDto = new UrlResponseDto();
             urlResponseDto.setOriginalUrl(urlToRet.getOriginalUrl());
             urlResponseDto.setExpirationDate(urlToRet.getExpirationDate());
             urlResponseDto.setShortLink(urlToRet.getShortLink());
-
-
-            return new ResponseEntity<>(urlResponseDto, HttpStatus.OK);
+            return ResponseEntity.ok(urlResponseDto);
+        } else {
+            UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
+            urlErrorReponseDto.setStatus("404");
+            urlErrorReponseDto.setError("There was an error processing your request. Please try again!");
+            return ResponseEntity.ok(urlErrorReponseDto);
         }
-        UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
-        urlErrorReponseDto.setStatus("404");
-        urlErrorReponseDto.setError("There was an error processing your request. Please try again!");
-
-        return new ResponseEntity<>(urlErrorReponseDto, HttpStatus.OK);
     }
+
 
 
     @GetMapping("/{shortLink}")
     public ResponseEntity<?> redirectToOriginalUrl(@PathVariable String shortLink, HttpServletResponse response) throws IOException {
-
         if (StringUtils.isEmpty(shortLink)) {
             UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
-            urlErrorReponseDto.setError("Url does not exit or it might have expired!");
+            urlErrorReponseDto.setError("Url does not exist or it might have expired!");
             urlErrorReponseDto.setStatus("400");
-            return new ResponseEntity<>(urlErrorReponseDto, HttpStatus.OK);
+            return new ResponseEntity<>(urlErrorReponseDto, HttpStatus.BAD_REQUEST);
         }
 
         Url urlToRet = urlService.getEncodedURL(shortLink);
 
         if (urlToRet.getExpirationDate().isBefore(LocalDateTime.now())) {
-
             urlService.deleteShortLink(urlToRet);
             UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
-            urlErrorReponseDto.setError("Url Expired. Please try generating a fresh one.");
+            urlErrorReponseDto.setError("Url has expired. Please try generating a fresh one.");
             urlErrorReponseDto.setStatus("200");
             return new ResponseEntity<>(urlErrorReponseDto, HttpStatus.OK);
         }
 
         response.sendRedirect(urlToRet.getOriginalUrl());
 
-        return null;
+        return ResponseEntity.ok().build();
     }
+
 }
