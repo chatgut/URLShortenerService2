@@ -26,7 +26,7 @@ public class UrlShorteningController {
 
 
 
-    @PostMapping("/generate")
+    @PostMapping("/urlShortener/short")
     public ResponseEntity<?> generateShortLink(@RequestBody UrlDto urlDto) {
         Url urlToRet = urlService.generateSHortLink(urlDto);
 
@@ -46,7 +46,7 @@ public class UrlShorteningController {
 
 
 
-    @GetMapping("/{shortLink}")
+    @GetMapping("/urlShortener/{shortLink}")
     public ResponseEntity<?> redirectToOriginalUrl(@PathVariable String shortLink, HttpServletResponse response) throws IOException {
         if (StringUtils.isEmpty(shortLink)) {
             UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
