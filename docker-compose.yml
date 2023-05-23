@@ -34,5 +34,28 @@ services:
       timeout: 10s
       retries: 5
 
+  authservice:
+    image: ghcr.io/chatgut/authservice2:latest
+    container_name: auth
+    depends_on:
+      - auth-DB
+    environment:
+        DB_URL: auth-DB:3306/auth-DB1
+        DB_USER: developer
+        DB_PASS: password
+    ports:
+      - "8003:8080"
+  auth-DB:
+    image: 'mysql:latest'
+    container_name: auth-DB1
+    volumes:
+     - dbAuth:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: auth-DB1
+      MYSQL_USER: developer
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: password
 volumes:
   db:
+  dbAuth:

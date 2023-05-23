@@ -67,7 +67,6 @@ public class RabbitConnection {
                     String extractedMessage = jsonPayload.getString("message");
 
 
-
                     if (checkingForHttpAndHttps(extractedMessage)) {
 
                         messageConvert = extractedMessage;
