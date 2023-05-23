@@ -26,7 +26,7 @@ public class UrlShorteningController {
 
 
 
-    @PostMapping("/urlShortener/short")
+        @PostMapping("/urlShortener")
     public ResponseEntity<?> generateShortLink(@RequestBody UrlDto urlDto) {
         Url urlToRet = urlService.generateSHortLink(urlDto);
 
