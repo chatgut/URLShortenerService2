@@ -14,7 +14,7 @@ services:
       DB_USER: developer
       DB_PASS: password
     ports:
-      - "8004:8080"
+      - "8004:8004"
 
   mysql:
     image: 'mysql:latest'
@@ -34,14 +34,14 @@ services:
 #      interval: 30s
 #      timeout: 10s
 #      retries: 5
-#  rabbitMQ:
-#    image: 'rabbitmq:3-management'
-#    container_name: QueueRabbitMQ
-#    volumes:
-#      - dbData:/var/lib/rabbitmq
-#    ports:
-#      - "15672:15672"
-#      - "5672:5672"
+  rabbitMQ:
+    image: 'rabbitmq:3-management'
+    container_name: QueueRabbitMQ
+    volumes:
+      - dbData:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
 
 
 volumes:
