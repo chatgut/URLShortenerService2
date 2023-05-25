@@ -4,6 +4,7 @@ services:
   app:
     build:
       context: .
+#    image: myimage:latest
     container_name: URLShortenerService2
     depends_on:
       mysql:
@@ -28,93 +29,12 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - '3306:3306'
-#    healthcheck:
-#      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER -p$$MYSQL_PASSWORD" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER -p$$MYSQL_PASSWORD" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
-  authservice:
-    image: ghcr.io/chatgut/authservice2:latest
-    container_name: auth
-    depends_on:
-      - auth-DB
-    environment:
-        DB_URL: auth-DB:3306/auth-DB1
-        DB_USER: developer
-        DB_PASS: password
-    ports:
-      - "8003:8080"
-  auth-DB:
-    image: 'mysql:latest'
-    container_name: auth-DB1
-    volumes:
-     - dbAuth:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: auth-DB1
-      MYSQL_USER: developer
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_ROOT_PASSWORD: password
-
-  porthservice:
-    image: ghcr.io/chatgut/micropostservice:main
-    container_name: postService
-    restart: on-failure
-    depends_on:
-      - mongodb
-      - rabbitMQ
-    environment:
-      ROCKET_DATABASES: '{postservice={url="mongodb://dbMongoDB:27017"}}'
-      ROCKET_RABBIT_HOST: "amqp://QueueRabbitMQ:5672"
-
-    ports:
-      - "8000:8000"
-
-  mongodb:
-    image: 'mongo:latest'
-    container_name: dbMongoDB
-    volumes:
-      - dbData:/var/lib/mongodb
-    ports:
-      - "27017:27017"
-
-  rabbitMQ:
-    image: 'rabbitmq:3-management'
-    container_name: QueueRabbitMQ
-    volumes:
-      - dbData:/var/lib/rabbitmq
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-
-###
-  usersappservice:
-    image: ghcr.io/chatgut/userservice:1.0
-    container_name: userservice
-    ports:
-      - "8002:8002"
-    depends_on:
-      - dbUsers
-    environment:
-      DB_URL: jdbc:mysql://dbUsers:3306/userService
-      DB_USER: developer
-      DB_PASSWORD: password
-
-  dbUsers:
-    image: mysql:latest
-    environment:
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_ROOT_USER: root
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: userService
-      MYSQL_PASSWORD: password
-      MYSQL_USER: developer
-    volumes:
-      - dbUsers:/var/lib/mysql
 
 volumes:
   db:
-  dbAuth:
-  dbData:
-  dbUsers:

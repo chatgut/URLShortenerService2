@@ -4,16 +4,18 @@ import com.example.urlshortenerservice.entity.Url;
 import com.example.urlshortenerservice.dto.UrlDto;
 import com.example.urlshortenerservice.dto.UrlErrorReponseDto;
 import com.example.urlshortenerservice.dto.UrlResponseDto;
+import com.example.urlshortenerservice.url.UrlShort;
 import com.example.urlshortenerservice.service.UrlService;
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 
 @CrossOrigin
@@ -25,28 +27,33 @@ public class UrlShorteningController {
     private UrlService urlService;
 
 
-
-        @PostMapping("/urlShortener")
-    public ResponseEntity<?> generateShortLink(@RequestBody UrlDto urlDto) {
+    @PostMapping("/urlShortener")
+    public UrlShort generateShortLink(@RequestBody UrlDto urlDto) {
         Url urlToRet = urlService.generateSHortLink(urlDto);
+
+        UrlShort urlShort = new UrlShort();
+
 
         if (urlToRet != null) {
             UrlResponseDto urlResponseDto = new UrlResponseDto();
             urlResponseDto.setOriginalUrl(urlToRet.getOriginalUrl());
             urlResponseDto.setExpirationDate(urlToRet.getExpirationDate());
             urlResponseDto.setShortLink(urlToRet.getShortLink());
-            return ResponseEntity.ok(urlResponseDto);
+
+            urlShort.setShort_url(urlToRet.getShortLink());
+            
+            return urlShort;
+
         } else {
             UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
             urlErrorReponseDto.setStatus("404");
             urlErrorReponseDto.setError("There was an error processing your request. Please try again!");
-            return ResponseEntity.ok(urlErrorReponseDto);
+            return null;
         }
     }
 
 
-
-    @GetMapping("/urlShortener/{shortLink}")
+    @GetMapping("/{shortLink}")
     public ResponseEntity<?> redirectToOriginalUrl(@PathVariable String shortLink, HttpServletResponse response) throws IOException {
         if (StringUtils.isEmpty(shortLink)) {
             UrlErrorReponseDto urlErrorReponseDto = new UrlErrorReponseDto();
@@ -69,5 +76,7 @@ public class UrlShorteningController {
 
         return ResponseEntity.ok().build();
     }
-
 }
+
+
+
