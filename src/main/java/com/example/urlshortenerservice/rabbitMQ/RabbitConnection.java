@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConnection {
     private Connection connection;
     private Channel channel;
-    private static final String QUEUE_NAME = "messages";
+    private static final String QUEUE_MESSAGE_GET = "messages";
     private static final String QUEUE_NAME_SENDING_MESSAGE = "shortUrl";
 
     private String messageConvert;
@@ -46,7 +46,7 @@ public class RabbitConnection {
             channel = connection.createChannel();
 
 
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+            channel.queueDeclare(QUEUE_MESSAGE_GET, false, false, false, null);
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }
@@ -55,15 +55,12 @@ public class RabbitConnection {
 
     public void startConsuming() {
         try {
-            channel.basicConsume(QUEUE_NAME, true, new DefaultConsumer(channel) {
+            channel.basicConsume(QUEUE_MESSAGE_GET, true, new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope,
                                            AMQP.BasicProperties properties, byte[] body) {
                     String message = new String(body, StandardCharsets.UTF_8);
-
-
                     JSONObject jsonPayload = new JSONObject(message);
-
                     String extractedMessage = jsonPayload.getString("message");
 
 
@@ -71,6 +68,8 @@ public class RabbitConnection {
 
                         messageConvert = extractedMessage;
                         UrlResponseDto urlResponseDto = addingInDatabaseMessage();
+
+                        System.out.println("Received message: " + messageConvert);
 
                         publishMessage(urlResponseDto.getShortLink());
                     }
@@ -81,7 +80,6 @@ public class RabbitConnection {
                     urlDto.setUrl(messageConvert);
 
                     Url urlToRet = urlService.generateSHortLink(urlDto);
-
 
                     UrlResponseDto urlResponseDto = new UrlResponseDto();
                     urlResponseDto.setOriginalUrl(urlToRet.getOriginalUrl());

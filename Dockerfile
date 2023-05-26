@@ -1,22 +1,22 @@
-FROM container-registry.oracle.com/graalvm/native-image:latest as graalvm
-
-RUN microdnf -y install wget unzip zip findutils tar
-
-COPY . /app
-WORKDIR /app
-
-RUN \
-    curl -s "https://get.sdkman.io" | bash; \
-    source "$HOME/.sdkman/bin/sdkman-init.sh"; \
-    sdk install maven; \
-    mvn package -Pnative native:compile -DskipTests
-
-FROM container-registry.oracle.com/os/oraclelinux:9-slim
-
-EXPOSE 8004
-COPY --from=graalvm app/target/imageService /app
-
-ENTRYPOINT ["/app"]
+#FROM container-registry.oracle.com/graalvm/native-image:latest AS graalvm
+#
+#RUN microdnf -y install wget unzip zip findutils tar
+#
+#COPY . /app
+#WORKDIR /app
+#
+#RUN \
+#    curl -s "https://get.sdkman.io" | bash; \
+#    source "$HOME/.sdkman/bin/sdkman-init.sh"; \
+#    sdk install maven; \
+#    mvn package -Pnative native:compile -DskipTests
+#
+#FROM container-registry.oracle.com/os/oraclelinux:9-slim
+#
+#EXPOSE 8004
+#COPY --from=graalvm app/target/URLShortenerService /app
+#
+#ENTRYPOINT ["/app"]
 
 #FROM maven:3.9-eclipse-temurin-20 as builder
 #COPY src /app/src
@@ -39,14 +39,14 @@ ENTRYPOINT ["/app"]
 #COPY --from=builder application/application/ ./
 #ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 
-#FROM maven:3.8.1-openjdk-17 AS build
-#WORKDIR /app
-#COPY pom.xml ./
-#COPY src ./src
-#RUN mvn clean package
-#
-#FROM openjdk:17-jdk-slim
-#COPY --from=build /app/target/*.jar /app.jar
-#WORKDIR /app
-#EXPOSE 8005
-#ENTRYPOINT ["java","-jar","/app.jar"]
+FROM maven:3.8.1-openjdk-17 AS build
+WORKDIR /app
+COPY pom.xml ./
+COPY src ./src
+RUN mvn clean package
+
+FROM openjdk:17-jdk-slim
+COPY --from=build /app/target/*.jar /app.jar
+WORKDIR /app
+EXPOSE 8005
+ENTRYPOINT ["java","-jar","/app.jar"]
