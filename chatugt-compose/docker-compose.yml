@@ -2,8 +2,8 @@ version: '3.8'
 
 services:
   app:
-    build:
-      context: .
+    #    build:
+    #      context: .
     #    image: myimage:latest
     container_name: URLShortenerService2
     #    depends_on:
