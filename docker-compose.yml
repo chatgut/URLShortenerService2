@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   app:
-    build:
-      context: .
-#    image: ghcr.io/chatgut/urlshortenerservice2:main
+#    build:
+#      context: .
+    image: ghcr.io/chatgut/urlshortenerservice2:main
     container_name: URLShortenerService2
     depends_on:
       mysql:
